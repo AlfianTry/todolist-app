@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { getDefaultTasks, TaskResponse } from "../services/taskApi";
 
 export interface Task {
   id?: number;
@@ -34,6 +35,14 @@ export const taskSlice = createSlice({
     addTask: (state, action: PayloadAction<Task>) => {
       state.tasks.push(action.payload);
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(getDefaultTasks.fulfilled, (state, action) => {
+      state.tasks = (action.payload as TaskResponse[]).map((response) => ({
+        ...response,
+        createdAt: new Date(response.createdAt),
+      }));
+    });
   },
 });
 

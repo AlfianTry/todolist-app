@@ -13,9 +13,7 @@ import {
   MenuItem,
   MenuList,
   Text,
-  VStack,
 } from "@chakra-ui/react";
-import { useGetDefaultTasksQuery } from "../services/taskApi";
 import { taskStatus } from "../slices/taskSlice";
 import { RootState, useAppSelector } from "../store";
 import AddTask from "./AddTask";
@@ -26,7 +24,6 @@ interface ITaskListProps {
 }
 
 export default function TaskList({ status }: ITaskListProps) {
-  //const { data: tasks } = useGetDefaultTasksQuery();
   const tasks = useAppSelector((state: RootState) => state.task.tasks);
   return (
     <Flex

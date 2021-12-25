@@ -1,5 +1,5 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { Task } from "../slices/taskSlice";
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 
 export interface TaskResponse {
   id: number;
@@ -9,23 +9,12 @@ export interface TaskResponse {
   createdAt: string;
 }
 
-const baseQuery = fetchBaseQuery({
-  baseUrl: "https://virtserver.swaggerhub.com/hanabyan/todo/1.0.0/",
-});
+const BASE_URL = "https://virtserver.swaggerhub.com/hanabyan/todo/1.0.0/";
 
-export const taskApi = createApi({
-  reducerPath: "taskApi",
-  baseQuery,
-  endpoints: (builder) => ({
-    getDefaultTasks: builder.query<Task[], void>({
-      query: () => "to-do-list",
-      transformResponse: (responses: TaskResponse[]) =>
-        responses.map((data) => ({
-          ...data,
-          createdAt: new Date(data.createdAt),
-        })),
-    }),
-  }),
-});
-
-export const { useGetDefaultTasksQuery } = taskApi;
+export const getDefaultTasks = createAsyncThunk(
+  "task/getDefaultTasks",
+  async () => {
+    const response = await axios.get(`${BASE_URL}to-do-list`);
+    return response.data;
+  }
+);
