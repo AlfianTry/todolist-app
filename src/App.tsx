@@ -1,4 +1,4 @@
-import { Stack, Button, SimpleGrid } from "@chakra-ui/react";
+import { SimpleGrid } from "@chakra-ui/react";
 
 function App() {
   return <SimpleGrid></SimpleGrid>;
