@@ -14,6 +14,7 @@ import {
   MenuList,
   Text,
 } from "@chakra-ui/react";
+import { useState } from "react";
 import { taskStatus } from "../slices/taskSlice";
 import { RootState, useAppSelector } from "../store";
 import AddTask from "./AddTask";
@@ -23,7 +24,15 @@ interface ITaskListProps {
   status: taskStatus;
 }
 
+enum order {
+  asc = "asc",
+  desc = "desc",
+}
+
 export default function TaskList({ status }: ITaskListProps) {
+  const [listOrder, setListOrder] = useState(
+    status === taskStatus.todo ? order.asc : order.desc
+  );
   const tasks = useAppSelector((state: RootState) => state.task.tasks);
   return (
     <Flex
@@ -38,7 +47,7 @@ export default function TaskList({ status }: ITaskListProps) {
         <Text fontSize="4xl" fontWeight="bold">
           {status === taskStatus.todo ? "To Do" : "Done"}
         </Text>
-        <Menu>
+        <Menu autoSelect={false}>
           <MenuButton
             as={IconButton}
             aria-label="Sort data"
@@ -46,8 +55,18 @@ export default function TaskList({ status }: ITaskListProps) {
             variant="ghost"
           />
           <MenuList>
-            <MenuItem icon={<ArrowUpIcon />}>Sort Oldest to Newest</MenuItem>
-            <MenuItem icon={<ArrowDownIcon />}>Sort Newest to Oldest</MenuItem>
+            <MenuItem
+              icon={<ArrowUpIcon />}
+              onClick={() => setListOrder(order.asc)}
+            >
+              Sort Oldest to Newest
+            </MenuItem>
+            <MenuItem
+              icon={<ArrowDownIcon />}
+              onClick={() => setListOrder(order.desc)}
+            >
+              Sort Newest to Oldest
+            </MenuItem>
             <MenuItem icon={<DeleteIcon />}>Remove All Tasks</MenuItem>
           </MenuList>
         </Menu>
@@ -58,7 +77,7 @@ export default function TaskList({ status }: ITaskListProps) {
           .sort((valueA, valueB) => {
             let dateA = valueA.createdAt;
             let dateB = valueB.createdAt;
-            if (status === taskStatus.done) {
+            if (listOrder === "desc") {
               [dateA, dateB] = [dateB, dateA];
             }
             return dateA.getTime() - dateB.getTime();
