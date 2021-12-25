@@ -1,8 +1,8 @@
 import {
-  HamburgerIcon,
-  ArrowUpIcon,
   ArrowDownIcon,
+  ArrowUpIcon,
   DeleteIcon,
+  HamburgerIcon,
 } from "@chakra-ui/icons";
 import {
   Flex,
@@ -14,6 +14,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { taskStatus } from "../slices/taskSlice";
+import AddTask from "./AddTask";
 
 interface ITaskListProps {
   status: taskStatus;
@@ -46,6 +47,7 @@ export default function TaskList({ status }: ITaskListProps) {
           </MenuList>
         </Menu>
       </Flex>
+      <AddTask />
     </Flex>
   );
 }
