@@ -1,4 +1,18 @@
-import { Flex, Text } from "@chakra-ui/react";
+import {
+  HamburgerIcon,
+  ArrowUpIcon,
+  ArrowDownIcon,
+  DeleteIcon,
+} from "@chakra-ui/icons";
+import {
+  Flex,
+  IconButton,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Text,
+} from "@chakra-ui/react";
 import { taskStatus } from "../slices/taskSlice";
 
 interface ITaskListProps {
@@ -18,6 +32,19 @@ export default function TaskList({ status }: ITaskListProps) {
         <Text fontSize="4xl" fontWeight="bold">
           {status === taskStatus.todo ? "To Do" : "Done"}
         </Text>
+        <Menu>
+          <MenuButton
+            as={IconButton}
+            aria-label="Sort data"
+            icon={<HamburgerIcon />}
+            variant="ghost"
+          />
+          <MenuList>
+            <MenuItem icon={<ArrowUpIcon />}>Sort Oldest to Newest</MenuItem>
+            <MenuItem icon={<ArrowDownIcon />}>Sort Newest to Oldest</MenuItem>
+            <MenuItem icon={<DeleteIcon />}>Remove All Tasks</MenuItem>
+          </MenuList>
+        </Menu>
       </Flex>
     </Flex>
   );
