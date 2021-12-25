@@ -5,6 +5,7 @@ import {
   HamburgerIcon,
 } from "@chakra-ui/icons";
 import {
+  Box,
   Flex,
   IconButton,
   Menu,
@@ -12,22 +13,27 @@ import {
   MenuItem,
   MenuList,
   Text,
+  VStack,
 } from "@chakra-ui/react";
+import { useGetDefaultTasksQuery } from "../services/taskApi";
 import { taskStatus } from "../slices/taskSlice";
 import AddTask from "./AddTask";
+import TaskCard from "./TaskCard";
 
 interface ITaskListProps {
   status: taskStatus;
 }
 
 export default function TaskList({ status }: ITaskListProps) {
+  const { data: tasks } = useGetDefaultTasksQuery();
   return (
     <Flex
-      m="2rem 1rem 1rem 2rem"
+      m="2rem 1rem"
       p="1rem"
       flexDirection="column"
       backgroundColor="gray.300"
       height="fit-content"
+      maxHeight="92vh"
     >
       <Flex justifyContent="space-between" alignItems="center" mb="1rem">
         <Text fontSize="4xl" fontWeight="bold">
@@ -47,6 +53,21 @@ export default function TaskList({ status }: ITaskListProps) {
           </MenuList>
         </Menu>
       </Flex>
+      <Box overflow="auto" mb={2}>
+        {tasks
+          ?.filter((task) => task.status === status)
+          .sort((valueA, valueB) => {
+            let dateA = new Date(valueA.createdAt);
+            let dateB = new Date(valueB.createdAt);
+            if (status === taskStatus.done) {
+              [dateA, dateB] = [dateB, dateA];
+            }
+            return dateA.getTime() - dateB.getTime();
+          })
+          .map((task) => (
+            <TaskCard key={task.id} task={task} />
+          ))}
+      </Box>
       <AddTask />
     </Flex>
   );

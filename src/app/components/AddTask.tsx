@@ -1,4 +1,4 @@
-import { Button, HStack, Input } from "@chakra-ui/react";
+import { Box, Button, HStack, Textarea } from "@chakra-ui/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -6,8 +6,8 @@ export default function AddTask() {
   const { register, handleSubmit, reset } = useForm();
   const [inputMode, setInputMode] = useState(false);
   return inputMode ? (
-    <>
-      <Input
+    <Box>
+      <Textarea
         variant="filled"
         size="lg"
         placeholder="Enter a title for this task"
@@ -36,7 +36,7 @@ export default function AddTask() {
           Cancel
         </Button>
       </HStack>
-    </>
+    </Box>
   ) : (
     <Button p="2rem" fontSize="xl" onClick={() => setInputMode(true)}>
       Add Task
