@@ -1,5 +1,5 @@
 import { Box, Text } from "@chakra-ui/react";
-import { Task } from "../services/taskApi";
+import { Task } from "../slices/taskSlice";
 
 interface TaskCardProps {
   task: Task;

@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { Task } from "../slices/taskSlice";
 
-export interface Task {
+export interface TaskResponse {
   id: number;
   title: string;
   description: string;
@@ -15,11 +16,14 @@ const baseQuery = fetchBaseQuery({
 export const taskApi = createApi({
   reducerPath: "taskApi",
   baseQuery,
-  tagTypes: ["Tasks"],
   endpoints: (builder) => ({
     getDefaultTasks: builder.query<Task[], void>({
       query: () => "to-do-list",
-      providesTags: [{ type: "Tasks", id: "LIST" }],
+      transformResponse: (responses: TaskResponse[]) =>
+        responses.map((data) => ({
+          ...data,
+          createdAt: new Date(data.createdAt),
+        })),
     }),
   }),
 });

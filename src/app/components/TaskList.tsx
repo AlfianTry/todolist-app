@@ -17,6 +17,7 @@ import {
 } from "@chakra-ui/react";
 import { useGetDefaultTasksQuery } from "../services/taskApi";
 import { taskStatus } from "../slices/taskSlice";
+import { RootState, useAppSelector } from "../store";
 import AddTask from "./AddTask";
 import TaskCard from "./TaskCard";
 
@@ -25,7 +26,8 @@ interface ITaskListProps {
 }
 
 export default function TaskList({ status }: ITaskListProps) {
-  const { data: tasks } = useGetDefaultTasksQuery();
+  //const { data: tasks } = useGetDefaultTasksQuery();
+  const tasks = useAppSelector((state: RootState) => state.task.tasks);
   return (
     <Flex
       m="2rem 1rem"
@@ -57,8 +59,8 @@ export default function TaskList({ status }: ITaskListProps) {
         {tasks
           ?.filter((task) => task.status === status)
           .sort((valueA, valueB) => {
-            let dateA = new Date(valueA.createdAt);
-            let dateB = new Date(valueB.createdAt);
+            let dateA = valueA.createdAt;
+            let dateB = valueB.createdAt;
             if (status === taskStatus.done) {
               [dateA, dateB] = [dateB, dateA];
             }
@@ -68,7 +70,7 @@ export default function TaskList({ status }: ITaskListProps) {
             <TaskCard key={task.id} task={task} />
           ))}
       </Box>
-      <AddTask />
+      <AddTask status={status} />
     </Flex>
   );
 }
