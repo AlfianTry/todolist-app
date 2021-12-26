@@ -1,25 +1,24 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { SimpleGrid } from "@chakra-ui/react";
+import { useEffect } from "react";
+import TaskList from "./app/components/TaskList";
+import TaskModal from "./app/components/TaskModal";
+import { getDefaultTasks } from "./app/services/taskApi";
+import { taskStatus } from "./app/slices/taskSlice";
+import { useAppDispatch } from "./app/store";
 
 function App() {
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(getDefaultTasks());
+  }, []);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <SimpleGrid columns={2} backgroundColor="blue.300" height="100vh">
+        <TaskList status={taskStatus.todo} />
+        <TaskList status={taskStatus.done} />
+      </SimpleGrid>
+      <TaskModal />
+    </>
   );
 }
 
