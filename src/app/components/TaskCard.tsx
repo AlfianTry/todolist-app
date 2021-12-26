@@ -15,7 +15,12 @@ import {
   MenuList,
   Text,
 } from "@chakra-ui/react";
-import { removeAllTasks, removeTask, Task } from "../slices/taskSlice";
+import {
+  removeAllTasks,
+  removeTask,
+  setOpenModal,
+  Task,
+} from "../slices/taskSlice";
 import { useAppDispatch } from "../store";
 
 interface TaskCardProps {
@@ -36,6 +41,9 @@ export default function TaskCard({ task }: TaskCardProps) {
       mt={2}
       justifyContent="space-between"
       _hover={{ background: "gray.200" }}
+      onClick={(event) => {
+        dispatch(setOpenModal({ isOpen: true, task }));
+      }}
     >
       <Box>
         <Text fontSize="xl" fontWeight="bold" isTruncated>
@@ -50,10 +58,19 @@ export default function TaskCard({ task }: TaskCardProps) {
           as={IconButton}
           aria-label="Sort data"
           icon={<HamburgerIcon />}
+          onClick={(event) => {
+            event.stopPropagation();
+            return false;
+          }}
           variant="ghost"
         />
         <MenuList>
-          <MenuItem icon={<ViewIcon />} onClick={() => {}}>
+          <MenuItem
+            icon={<ViewIcon />}
+            onClick={(event) => {
+              dispatch(setOpenModal({ isOpen: true, task }));
+            }}
+          >
             View Detail
           </MenuItem>
           <MenuItem

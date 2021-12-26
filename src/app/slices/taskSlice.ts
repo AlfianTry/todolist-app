@@ -15,12 +15,19 @@ export enum taskStatus {
   done = 1,
 }
 
+type ModalPayload = {
+  isOpen: boolean;
+  task?: Task;
+};
+
 interface TaskState {
   tasks: Task[];
+  modalState: ModalPayload;
 }
 
 const initialState: TaskState = {
   tasks: [],
+  modalState: { isOpen: false },
 };
 
 export const taskSlice = createSlice({
@@ -39,13 +46,31 @@ export const taskSlice = createSlice({
         id: state.tasks.length + 1,
       });
     },
-    removeTask: (state, action: PayloadAction<Task>) => {
-      state.tasks = state.tasks.filter((task) => task.id !== action.payload.id);
+    updateTask: (state, action: PayloadAction<Task>) => {
+      console.log(action.payload);
+      const taskIndex = state.tasks.findIndex(
+        (task) => task.id === action.payload.id
+      );
+      if (taskIndex > -1) {
+        state.tasks[taskIndex] = action.payload;
+        state.modalState.task = action.payload;
+      }
+    },
+    removeTask: (state, action: PayloadAction<Task | undefined>) => {
+      state.tasks = state.tasks.filter(
+        (task) => task.id !== action.payload?.id
+      );
     },
     removeAllTasks: (state, action: PayloadAction<taskStatus>) => {
       state.tasks = state.tasks.filter(
         (task) => task.status !== action.payload
       );
+    },
+    setOpenModal: (state, action: PayloadAction<ModalPayload>) => {
+      state.modalState = {
+        ...action.payload,
+        task: action.payload.task || undefined,
+      };
     },
   },
   extraReducers: (builder) => {
@@ -58,7 +83,13 @@ export const taskSlice = createSlice({
   },
 });
 
-export const { initTasks, addTask, removeTask, removeAllTasks } =
-  taskSlice.actions;
+export const {
+  initTasks,
+  addTask,
+  updateTask,
+  removeTask,
+  removeAllTasks,
+  setOpenModal,
+} = taskSlice.actions;
 
 export default taskSlice.reducer;
