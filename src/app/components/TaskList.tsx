@@ -19,6 +19,7 @@ import { removeAllTasks, taskStatus } from "../slices/taskSlice";
 import { RootState, useAppDispatch, useAppSelector } from "../store";
 import AddTask from "./AddTask";
 import TaskCard from "./TaskCard";
+import { Droppable } from "react-beautiful-dnd";
 
 interface ITaskListProps {
   status: taskStatus;
@@ -77,21 +78,30 @@ export default function TaskList({ status }: ITaskListProps) {
           </MenuList>
         </Menu>
       </Flex>
-      <Box overflow="auto" mb={2}>
-        {tasks
-          ?.filter((task) => task.status === status)
-          .sort((valueA, valueB) => {
-            let dateA = valueA.createdAt;
-            let dateB = valueB.createdAt;
-            if (listOrder === "desc") {
-              [dateA, dateB] = [dateB, dateA];
-            }
-            return dateA.getTime() - dateB.getTime();
-          })
-          .map((task) => (
-            <TaskCard key={task.id} task={task} />
-          ))}
-      </Box>
+      <Droppable droppableId={status.toString()}>
+        {(provided, snapshot) => (
+          <Box
+            overflow="auto"
+            mb={2}
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+          >
+            {tasks
+              ?.filter((task) => task.status === status)
+              .sort((valueA, valueB) => {
+                let dateA = valueA.createdAt;
+                let dateB = valueB.createdAt;
+                if (listOrder === "desc") {
+                  [dateA, dateB] = [dateB, dateA];
+                }
+                return dateA.getTime() - dateB.getTime();
+              })
+              .map((task, index) => (
+                <TaskCard key={task.id} task={task} index={index} />
+              ))}
+          </Box>
+        )}
+      </Droppable>
       <AddTask status={status} />
     </Flex>
   );
