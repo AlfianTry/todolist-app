@@ -47,13 +47,24 @@ export const taskSlice = createSlice({
       });
     },
     updateTask: (state, action: PayloadAction<Task>) => {
-      console.log(action.payload);
       const taskIndex = state.tasks.findIndex(
         (task) => task.id === action.payload.id
       );
       if (taskIndex > -1) {
         state.tasks[taskIndex] = action.payload;
         state.modalState.task = action.payload;
+      }
+    },
+    updateTaskStatus: (state, action: PayloadAction<[string, string]>) => {
+      const draggedTaskIndex = state.tasks.findIndex(
+        (task) => task.id?.toString() === action.payload[0]
+      );
+      if (draggedTaskIndex > -1) {
+        const updatedTask = {
+          ...state.tasks[draggedTaskIndex],
+          status: parseInt(action.payload[1]),
+        };
+        state.tasks[draggedTaskIndex] = updatedTask;
       }
     },
     removeTask: (state, action: PayloadAction<Task | undefined>) => {
@@ -87,6 +98,7 @@ export const {
   initTasks,
   addTask,
   updateTask,
+  updateTaskStatus,
   removeTask,
   removeAllTasks,
   setOpenModal,
