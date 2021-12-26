@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { stat } from "fs";
 import { getDefaultTasks, TaskResponse } from "../services/taskApi";
 
 export interface Task {
@@ -33,7 +34,18 @@ export const taskSlice = createSlice({
       };
     },
     addTask: (state, action: PayloadAction<Task>) => {
-      state.tasks.push(action.payload);
+      state.tasks.push({
+        ...action.payload,
+        id: state.tasks.length + 1,
+      });
+    },
+    removeTask: (state, action: PayloadAction<Task>) => {
+      state.tasks = state.tasks.filter((task) => task.id !== action.payload.id);
+    },
+    removeAllTasks: (state, action: PayloadAction<taskStatus>) => {
+      state.tasks = state.tasks.filter(
+        (task) => task.status !== action.payload
+      );
     },
   },
   extraReducers: (builder) => {
@@ -46,6 +58,7 @@ export const taskSlice = createSlice({
   },
 });
 
-export const { initTasks, addTask } = taskSlice.actions;
+export const { initTasks, addTask, removeTask, removeAllTasks } =
+  taskSlice.actions;
 
 export default taskSlice.reducer;

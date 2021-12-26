@@ -15,8 +15,8 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { taskStatus } from "../slices/taskSlice";
-import { RootState, useAppSelector } from "../store";
+import { removeAllTasks, taskStatus } from "../slices/taskSlice";
+import { RootState, useAppDispatch, useAppSelector } from "../store";
 import AddTask from "./AddTask";
 import TaskCard from "./TaskCard";
 
@@ -30,10 +30,11 @@ enum order {
 }
 
 export default function TaskList({ status }: ITaskListProps) {
+  const dispatch = useAppDispatch();
+  const tasks = useAppSelector((state: RootState) => state.task.tasks);
   const [listOrder, setListOrder] = useState(
     status === taskStatus.todo ? order.asc : order.desc
   );
-  const tasks = useAppSelector((state: RootState) => state.task.tasks);
   return (
     <Flex
       m="2rem 1rem"
@@ -67,7 +68,12 @@ export default function TaskList({ status }: ITaskListProps) {
             >
               Sort Newest to Oldest
             </MenuItem>
-            <MenuItem icon={<DeleteIcon />}>Remove All Tasks</MenuItem>
+            <MenuItem
+              icon={<DeleteIcon />}
+              onClick={() => dispatch(removeAllTasks(status))}
+            >
+              Remove All Tasks
+            </MenuItem>
           </MenuList>
         </Menu>
       </Flex>
