@@ -141,7 +141,6 @@ export default function TaskModal() {
             onClick={() => {
               if (isUpdate) {
                 handleSubmit((data: any) => {
-                  console.log(data);
                   dispatch(
                     updateTask({
                       id: task?.id,
